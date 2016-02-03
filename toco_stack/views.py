@@ -3,18 +3,21 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.template import RequestContext, loader
 from django.core.urlresolvers import reverse
+import logging
 from toco.user import User, SessionToken
 
+logger = logging.getLogger(__name__)
 
 def index(request, message='You\'re at the Toco index page!'):
-    message = "No user logged in."
+    message = str(request.COOKIES)
+    sessions = []
     if request.user:
         message = "User: {} ; Session: {}".format(request.user.email, request.session.id)
-    response = render(request, 'index.html', {'message': message})
+        sessions = request.user.active_session_tokens()
+    response = render(request, 'index.html', {'message': message, 'sessions':sessions})
     return response
 
 def login(request, message='You\'re at the Toco index page!'):
-    print("Login called!")
     response = HttpResponseRedirect(request.POST.get('from', '/'))
     email = request.POST.get('email')
     password = request.POST.get('password')
@@ -23,12 +26,11 @@ def login(request, message='You\'re at the Toco index page!'):
     if email and password:
         user = User.load_with_auth(email, password)
         if user:
-            token = user.get_new_session_token()
-            response.set_cookie(SessionToken.CKEY, value=token.id, expires=token.expiry_datetime(), secure=None, httponly=True)
+            token = user.get_new_session_token(HTTP_USER_AGENT=request.META.get("HTTP_USER_AGENT"), REMOTE_ADDR=request.META.get("REMOTE_ADDR"))
+            response.set_cookie(SessionToken.CKEY, value=token.id, expires=token.expiry_datetime, secure=None, httponly=True)
     return response
 
 def logout(request, message='You\'re at the Toco index page!'):
-    print("Logout called!")
     try:
         request.session.expire()
     except AttributeError:
@@ -39,7 +41,6 @@ def logout(request, message='You\'re at the Toco index page!'):
     return response
 
 def logout_everywhere(request, message='You\'re at the Toco index page!'):
-    print("Logout everywhere called!")
     try:
         request.user.purge_sessions()
     except AttributeError:
@@ -50,8 +51,6 @@ def logout_everywhere(request, message='You\'re at the Toco index page!'):
     return response
 
 def register(request, message='You\'re at the Toco index page!'):
-    print("Register called!")
-
     email = request.POST.get('email')
     p1 = request.POST.get('password')
     p2 = request.POST.get('confirm_password')
@@ -62,8 +61,8 @@ def register(request, message='You\'re at the Toco index page!'):
             user = User(email=email)
             user.set_password(p1)
             user.create()
-            token = user.get_new_session_token()
-            response.set_cookie(SessionToken.CKEY, value=token.id, expires=token.expiry_datetime(), secure=None, httponly=True)
+            token = user.get_new_session_token(HTTP_USER_AGENT=request.META.get("HTTP_USER_AGENT"), REMOTE_ADDR=request.META.get("REMOTE_ADDR"))
+            response.set_cookie(SessionToken.CKEY, value=token.id, expires=token.expiry_datetime, secure=None, httponly=True)
     except:
         pass
     return response

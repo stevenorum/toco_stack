@@ -13,6 +13,28 @@
 
 <p>{{user.email}}</p>
 
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Session start</th>
+        <th>Session end</th>
+        <th>ID</th>
+        <th>User agent</th>
+        <th>IP</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for session in sessions %}
+      <tr>
+        <td>{{ session.pretty_created }}</td>
+        <td>{{ session.pretty_expiry }}</td>
+        <td>{{ session.id }}</td>
+        <td>{{ session.HTTP_USER_AGENT }}</td>
+        <td>{{ session.REMOTE_ADDR }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 <form method="post" action="{% url 'logout' %}" id="logout">
   {% csrf_token %}
   {% if redirect_field_value %}

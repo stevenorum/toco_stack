@@ -53,6 +53,25 @@ MIDDLEWARE_CLASSES = [
 #     'toco.django.middleware.AuthMW',
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'django.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 ROOT_URLCONF = 'toco_stack.urls'
 
 TEMPLATES = [
