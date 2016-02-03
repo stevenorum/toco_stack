@@ -12,9 +12,10 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os, toco
 
+TOCO_STAGE = os.environ.get('TOCO_STAGE', 'dev')
+STAGE = os.environ.get('STAGE', 'dev')
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -42,14 +43,14 @@ INSTALLED_APPS = [
 MIDDLEWARE_CLASSES = [
     'toco.django.middleware.AuthMW',
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+#     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+#     'django.contrib.auth.middleware.AuthenticationMiddleware',
+#     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+#     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'toco.django.middleware.AuthMW',
+#     'toco.django.middleware.AuthMW',
 ]
 
 ROOT_URLCONF = 'toco_stack.urls'
@@ -57,7 +58,9 @@ ROOT_URLCONF = 'toco_stack.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'toco_stack', 'templates'),
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -65,11 +68,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.core.context_processors.request',
             ],
         },
     },
 ]
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'toco_stack', 'static'),
+    ]
 WSGI_APPLICATION = 'toco_stack.wsgi.application'
 
 

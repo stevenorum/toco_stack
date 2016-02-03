@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<p>
+  Welcome to Toco.
+</p>
+{% if message %}
+<p>
+  {{ message }}
+</p>
+{% endif %}
+
+{% if user.email %}
+
+<p>{{user.email}}</p>
+
+<form method="post" action="{% url 'logout' %}" id="logout">
+  {% csrf_token %}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{redirect_field_name}}" value="{{redirect_field_value}}" form="logout"/>
+  {% endif %}
+  <input type="hidden" name="from" value="/" form="logout"/>
+  <button type="submit">Logout</button>
+</form>
+
+<form method="post" action="{% url 'logout_everywhere' %}" id="logout_everywhere">
+  {% csrf_token %}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{redirect_field_name}}" value="{{redirect_field_value}}" form="logout_everywhere"/>
+  {% endif %}
+  <input type="hidden" name="from" value="/" form="logout_everywhere"/>
+  <button type="submit">End ALL sessions (including on other computers)</button>
+</form>
+
+{% else %}
+
+<form action="{% url 'register' %}" method="post" id="register">
+  {% csrf_token %}
+  <label>email:</label><input type="text" name="email" form="register" required autofocus>
+  <label>password:</label><input type="password" name="password" form="register" required>
+  <label>password (again):</label><input type="password" name="confirm_password" form="register" required>
+  <input type="hidden" name="from" value="/"/>
+  <button type="submit" >Register</button>
+</form>
+
+<form method="post" action="{% url 'login' %}" id="login">
+  {% csrf_token %}
+  <label>email:</label><input type="text" name="email" form="login" required autofocus>
+  <label>password:</label><input type="password" name="password" form="login" required>
+  <input type="hidden" name="from" value="/"/>
+  <button type="submit">Login</button>
+</form>
+
+{% endif %}
+{% endblock %}
