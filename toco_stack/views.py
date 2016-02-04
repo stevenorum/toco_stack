@@ -28,10 +28,8 @@ def reset_password(request):
     email = request.POST.get('email')
 
     print(settings.EMAIL_HOST_USER)
-#     send_mail('Subject here', 'This is an example message.', 'toco@stevenorum.com',
-#               ['to@example.com'], fail_silently=False)
-#     email = request.POST.get('email')
-#     password = request.POST.get('password')
+    print(send_mail('toco subject', 'This is an example toco message.', settings.DEFAULT_FROM_EMAIL,
+              [email], fail_silently=False))
 
 #     response = HttpResponseRedirect(request.POST.get('from', '/'))
 #     if email and password:
