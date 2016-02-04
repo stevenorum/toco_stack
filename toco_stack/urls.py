@@ -20,6 +20,7 @@ from toco_stack import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^login$', views.login, name='login'),
+    url(r'^reset_password$', views.reset_password, name='reset_password'),
     url(r'^logout$', views.logout, name='logout'),
     url(r'^logout_everywhere$', views.logout_everywhere, name='logout_everywhere'),
     url(r'^register$', views.register, name='register'),

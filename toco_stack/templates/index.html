@@ -72,5 +72,12 @@
   <button type="submit">Login</button>
 </form>
 
+<form method="post" action="{% url 'reset_password' %}" id="reset_password">
+  {% csrf_token %}
+  <label>email:</label><input type="text" name="email" form="reset_password" required autofocus>
+  <input type="hidden" name="from" value="/"/>
+  <button type="submit">Request password reset</button>
+</form>
+
 {% endif %}
 {% endblock %}

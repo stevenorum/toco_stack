@@ -10,12 +10,22 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-import os, toco
+import json, os, toco
 
 TOCO_STAGE = os.environ.get('TOCO_STAGE', 'dev')
 STAGE = os.environ.get('STAGE', 'dev')
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+SECRET_SETTINGS_FILE = "secret_settings.json"
+
+with open(os.path.join(BASE_DIR, SECRET_SETTINGS_FILE), 'r') as f:
+    secrets = json.load(f)
+for key in secrets:
+    os.environ[str(key)] = str(secrets[key])
+
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/

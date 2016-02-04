@@ -1,16 +1,17 @@
 from django.conf import settings
+from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.template import RequestContext, loader
-from django.core.urlresolvers import reverse
 import logging
 from toco.user import User, SessionToken
 
 logger = logging.getLogger(__name__)
 
-def index(request, message='You\'re at the Toco index page!'):
+def index(request, message=None):
     print("Index method beginning.")
-    message = str(request.COOKIES)
+    message = message if message else str(request.COOKIES)
     sessions = []
     print(request.session)
     print(request.user)
@@ -19,6 +20,28 @@ def index(request, message='You\'re at the Toco index page!'):
         sessions = request.user.active_session_tokens()
     response = render(request, 'index.html', {'message': message, 'sessions':sessions, 'user':request.user, 'session':request.session})
     print("Index method ending.")
+    return response
+
+def reset_password(request):
+    print("reset password method beginning.")        
+    response = HttpResponseRedirect(request.POST.get('from', '/'))
+    email = request.POST.get('email')
+
+    print(settings.EMAIL_HOST_USER)
+#     send_mail('Subject here', 'This is an example message.', 'toco@stevenorum.com',
+#               ['to@example.com'], fail_silently=False)
+#     email = request.POST.get('email')
+#     password = request.POST.get('password')
+
+#     response = HttpResponseRedirect(request.POST.get('from', '/'))
+#     if email and password:
+#         user = User.load_with_auth(email, password)
+#         if user:
+#             token = user.get_new_session_token(HTTP_USER_AGENT=request.META.get("HTTP_USER_AGENT"), REMOTE_ADDR=request.META.get("REMOTE_ADDR"))
+#             response.set_cookie(SessionToken.CKEY, value=token.id, expires=token.expiry_datetime, secure=None, httponly=True)
+#             request.user=user
+#             request.session=token
+    print("reset password method ending.")
     return response
 
 def login(request):
