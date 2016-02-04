@@ -53,6 +53,10 @@
   <button type="submit">End ALL sessions (including on other computers)</button>
 </form>
 
+{% elif password_reset_request_id %}
+
+FOO!
+
 {% else %}
 
 <form action="{% url 'register' %}" method="post" id="register">
@@ -72,9 +76,9 @@
   <button type="submit">Login</button>
 </form>
 
-<form method="post" action="{% url 'reset_password' %}" id="reset_password">
+<form method="post" action="{% url 'request_password_reset' %}" id="request_password_reset">
   {% csrf_token %}
-  <label>email:</label><input type="text" name="email" form="reset_password" required autofocus>
+  <label>email:</label><input type="text" name="email" form="request_password_reset" required autofocus>
   <input type="hidden" name="from" value="/"/>
   <button type="submit">Request password reset</button>
 </form>
