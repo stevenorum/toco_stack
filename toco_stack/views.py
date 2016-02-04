@@ -9,15 +9,20 @@ from toco.user import User, SessionToken
 logger = logging.getLogger(__name__)
 
 def index(request, message='You\'re at the Toco index page!'):
+    print("Index method beginning.")
     message = str(request.COOKIES)
     sessions = []
+    print(request.session)
+    print(request.user)
     if request.user:
-        message = "User: {} ; Session: {}".format(request.user.email, request.session.id)
+#         message = "User: {} ; Session: {}".format(request.user.email, request.session.id)
         sessions = request.user.active_session_tokens()
-    response = render(request, 'index.html', {'message': message, 'sessions':sessions})
+    response = render(request, 'index.html', {'message': message, 'sessions':sessions, 'user':request.user, 'session':request.session})
+    print("Index method ending.")
     return response
 
-def login(request, message='You\'re at the Toco index page!'):
+def login(request):
+    print("Login method beginning.")
     response = HttpResponseRedirect(request.POST.get('from', '/'))
     email = request.POST.get('email')
     password = request.POST.get('password')
@@ -28,9 +33,12 @@ def login(request, message='You\'re at the Toco index page!'):
         if user:
             token = user.get_new_session_token(HTTP_USER_AGENT=request.META.get("HTTP_USER_AGENT"), REMOTE_ADDR=request.META.get("REMOTE_ADDR"))
             response.set_cookie(SessionToken.CKEY, value=token.id, expires=token.expiry_datetime, secure=None, httponly=True)
+            request.user=user
+            request.session=token
+    print("Login method ending.")
     return response
 
-def logout(request, message='You\'re at the Toco index page!'):
+def logout(request):
     try:
         request.session.expire()
     except AttributeError:
@@ -40,7 +48,7 @@ def logout(request, message='You\'re at the Toco index page!'):
     response.delete_cookie(SessionToken.CKEY)
     return response
 
-def logout_everywhere(request, message='You\'re at the Toco index page!'):
+def logout_everywhere(request):
     try:
         request.user.purge_sessions()
     except AttributeError:
@@ -50,7 +58,7 @@ def logout_everywhere(request, message='You\'re at the Toco index page!'):
     response.delete_cookie(SessionToken.CKEY)
     return response
 
-def register(request, message='You\'re at the Toco index page!'):
+def register(request):
     email = request.POST.get('email')
     p1 = request.POST.get('password')
     p2 = request.POST.get('confirm_password')

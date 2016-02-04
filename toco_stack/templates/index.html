@@ -11,26 +11,26 @@
 
 {% if user.email %}
 
-<p>{{user.email}}</p>
+<p>User: {{user.email}}</p>
 
   <table class="table table-striped">
     <thead>
       <tr>
         <th>Session start</th>
         <th>Session end</th>
-        <th>ID</th>
         <th>User agent</th>
         <th>IP</th>
+	<th>Your session?</th>
       </tr>
     </thead>
     <tbody>
-      {% for session in sessions %}
+      {% for sess in sessions %}
       <tr>
-        <td>{{ session.pretty_created }}</td>
-        <td>{{ session.pretty_expiry }}</td>
-        <td>{{ session.id }}</td>
-        <td>{{ session.HTTP_USER_AGENT }}</td>
-        <td>{{ session.REMOTE_ADDR }}</td>
+        <td>{{ sess.pretty_created }}</td>
+        <td>{{ sess.pretty_expiry }}</td>
+        <td>{{ sess.HTTP_USER_AGENT }}</td>
+        <td>{{ sess.REMOTE_ADDR }}</td>
+	<td>{% if sess.id == session.id %} YES {% else %} NO {% endif %}</td>
       </tr>
       {% endfor %}
     </tbody>
