@@ -32,7 +32,8 @@ def password_reset_request(request, request_id = None):
 
 def request_password_reset(request):
     # FINISH IMPLEMENTING
-    print("request_password_reset method beginning.")        
+    print("request_password_reset method beginning.")
+    response = HttpResponseRedirect(request.POST.get('redirect_to', '/'))
     email = request.POST.get('email')
     reset_request = PasswordResetRequest(email=email)
     reset_request.create()
@@ -47,14 +48,15 @@ def request_password_reset(request):
     return response
 
 def reset_password(request):
-    print("reset password method beginning.")        
-    response = HttpResponseRedirect(request.POST.get('from', '/'))
+    print("reset password method beginning.")
+    response = HttpResponseRedirect(request.POST.get('redirect_to', '/'))
     if request.user:
         if not request.user.password_is_correct(request.POST.get('current_password')):
             # ADD ERROR HERE
             return rsponse
     else:
-        user = User.load_from_password_reset_request(request.POST.get('reset_request_id'))
+        reset_request = PasswordResetRequest(id=request.POST.get('reset_request_id'))
+        user = User.load_from_password_reset_request(reset_request)
         if not user:
             # ADD ERROR HERE
             return response
@@ -63,16 +65,17 @@ def reset_password(request):
     new_password_2 = request.POST.get('confirm_password')
     if new_password_1 == new_password_2:
         request.user.set_password(new_password_1)
+        request.user.save()
+        if reset_request:
+            reset_request.expire()
     print("reset password method ending.")
     return response
 
 def login(request):
     print("Login method beginning.")
-    response = HttpResponseRedirect(request.POST.get('from', '/'))
+    response = HttpResponseRedirect(request.POST.get('redirect_to', '/'))
     email = request.POST.get('email')
     password = request.POST.get('password')
-
-    response = HttpResponseRedirect(request.POST.get('from', '/'))
     if email and password:
         user = User.load_with_auth(email, password)
         if user:
@@ -87,9 +90,8 @@ def logout(request):
     try:
         request.session.expire()
     except AttributeError:
-        print('request.session not found.')
         pass
-    response = HttpResponseRedirect(request.POST.get('from', '/'))
+    response = HttpResponseRedirect(request.POST.get('redirect_to', '/'))
     response.delete_cookie(SessionToken.CKEY)
     return response
 
@@ -97,9 +99,8 @@ def logout_everywhere(request):
     try:
         request.user.purge_sessions()
     except AttributeError:
-        print('request.user not found.')
         pass
-    response = HttpResponseRedirect(request.POST.get('from', '/'))
+    response = HttpResponseRedirect(request.POST.get('redirect_to', '/'))
     response.delete_cookie(SessionToken.CKEY)
     return response
 
@@ -108,7 +109,7 @@ def register(request):
     p1 = request.POST.get('password')
     p2 = request.POST.get('confirm_password')
 
-    response = HttpResponseRedirect(request.POST.get('from', '/'))
+    response = HttpResponseRedirect(request.POST.get('redirect_to', '/'))
     try:
         if email and p1 and p2 and p1 == p2:
             user = User(email=email)
