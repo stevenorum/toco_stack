@@ -46,7 +46,6 @@
 <form method="post" action="{% url 'logout_everywhere' %}" id="logout_everywhere">
   {% csrf_token %}
   {% if redirect_field_value %}
-  <input type="hidden" name="{{redirect_field_name}}" value="{{redirect_field_value}}" form="logout_everywhere"/>
   {% endif %}
   <input type="hidden" name="redirect_to" value="/" form="logout_everywhere"/>
   <button type="submit">End ALL sessions (including on other computers)</button>
@@ -55,20 +54,20 @@
 <form action="{% url 'reset_password' %}" method="post" id="reset_password_logged_in">
   {% csrf_token %}
   <label>current password:</label><input type="password" name="current_password" form="reset_password_logged_in" required>
-  <label>new password:</label><input type="password" name="password" form="reset_password_logged_in" required>
+  <label>new password:</label><input type="password" name="new_password" form="reset_password_logged_in" required>
   <label>new password (again):</label><input type="password" name="confirm_password" form="reset_password_logged_in" required>
   <input type="hidden" name="redirect_to" value="/"/>
   <button type="submit" >Reset password</button>
 </form>
 
-{% elif password_reset_request_id %}
+{% elif reset_code %}
 
 <form action="{% url 'reset_password' %}" method="post" id="reset_password">
   {% csrf_token %}
-  <label>new password:</label><input type="password" name="password" form="reset_password" required>
+  <label>new password:</label><input type="password" name="new_password" form="reset_password" required>
   <label>new password (again):</label><input type="password" name="confirm_password" form="reset_password" required>
   <input type="hidden" name="redirect_to" value="/"/>
-  <input type="hidden" name="reset_request_id" value="{{password_reset_request_id}}"/>
+  <input type="hidden" name="reset_code" value="{{reset_code}}"/>
   <button type="submit" >Reset password</button>
 </form>
 

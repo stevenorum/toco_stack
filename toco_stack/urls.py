@@ -18,13 +18,13 @@ from django.contrib import admin
 from toco_stack import views
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^login$', views.login, name='login'),
-    url(r'^reset_password$', views.reset_password, name='reset_password'),
-    url(r'^request_password_reset$', views.request_password_reset, name='request_password_reset'),
-    url(r'^password_reset_request/(?P<request_id>[0-9a-f]{64})$', views.password_reset_request, name='password_reset_request'),
-    url(r'^logout$', views.logout, name='logout'),
-    url(r'^logout_everywhere$', views.logout_everywhere, name='logout_everywhere'),
-    url(r'^register$', views.register, name='register'),
+    url(r'^$', views.index_view, name='index'),
+    url(r'^login$', views.login_view, name='login'),
+    url(r'^reset_password$', views.reset_password_view, name='reset_password'),
+    url(r'^request_password_reset$', views.request_password_reset_view, name='request_password_reset'),
+    url(r'^password_reset_request/(?P<request_id>[0-9a-f]{64})$', views.password_reset_request_view, name='password_reset_request'),
+    url(r'^logout$', views.logout_view, name='logout'),
+    url(r'^logout_everywhere$', views.logout_everywhere_view, name='logout_everywhere'),
+    url(r'^register$', views.register_view, name='register'),
 #     url(r'^admin/', admin.site.urls),
 ]

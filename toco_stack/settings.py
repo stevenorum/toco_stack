@@ -14,8 +14,12 @@ import json, os, toco
 
 TOCO_STAGE = os.environ.get('TOCO_STAGE', 'dev')
 STAGE = os.environ.get('STAGE', 'dev')
+TOCO_APP = os.environ.get('TOCO_APP', None)
+APP = os.environ.get('APP', None)
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+TOCO_SECURE_SESSION_COOKIES = False
 
 SECRET_SETTINGS_FILE = "secret_settings.json"
 
